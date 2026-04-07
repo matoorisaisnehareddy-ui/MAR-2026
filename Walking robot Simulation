@@ -1,0 +1,28 @@
+class Robot:
+    def __init__(self, w: int, h: int):
+        self.w, self.h = w, h
+        self.p = 2 * (w + h) - 4
+        self.pos = 0
+
+    def step(self, num: int) -> None:
+        self.pos = (self.pos + num) % self.p or (self.p if num else 0)
+
+    def getPos(self) -> list[int]:
+        p = self.pos
+        if p <= self.w - 1: return [p, 0]
+        p -= self.w - 1
+        if p <= self.h - 1: return [self.w - 1, p]
+        p -= self.h - 1
+        if p <= self.w - 1: return [self.w - 1 - p, self.h - 1]
+        p -= self.w - 1
+        return [0, self.h - 1 - p]
+
+    def getDir(self) -> str:
+        if self.pos == 0: return "East"
+        p = self.pos
+        if p <= self.w - 1: return "East"
+        p -= self.w - 1
+        if p <= self.h - 1: return "North"
+        p -= self.h - 1
+        if p <= self.w - 1: return "West"
+        return "South"
