@@ -1,0 +1,39 @@
+from bisect import bisect_left
+from typing import List
+
+class Solution:
+    def maxDistance(self, side: int, points: List[List[int]], k: int) -> int:
+        def convert(x, y):
+            if y == 0:
+                return x
+            elif x == side:
+                return side + y
+            elif y == side:
+                return 3 * side - x
+            else:
+                return 4 * side - y
+        arr = sorted(convert(x, y) for x, y in points)
+        n = len(arr)
+        L = 4 * side
+        arr = arr + [x + L for x in arr]
+        def can(d):
+            for i in range(n):
+                cur = i
+                cnt = 1
+                for _ in range(k - 1):
+                    nxt = bisect_left(arr, arr[cur] + d, cur + 1, i + n)
+                    if nxt >= i + n:
+                        break
+                    cur = nxt
+                    cnt += 1
+                if cnt == k and arr[cur] - arr[i] <= L - d:
+                    return True
+            return False
+        lo, hi = 0, L
+        while lo < hi:
+            mid = (lo + hi + 1) // 2
+            if can(mid):
+                lo = mid
+            else:
+                hi = mid - 1      
+        return lo
